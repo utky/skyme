@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 =======
 ## Pipelines
 
@@ -10,6 +11,11 @@ Read source syntax and output eBPF instructions.
 Read eBPF instructions and send to kernel.
 
 ## Test
+=======
+## テストの基本
+
+プログラム - skymec -> asm - skyme -> native code
+>>>>>>> 09aded2... add go resources
 
 ## Reference
 
