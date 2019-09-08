@@ -3,15 +3,17 @@ package main
 import (
 	"fmt"
 	"os"
-	"unsafe"
 
-	"golang.org/x/sys/unix"
+	"github.com/utky/skyme/pkg/ebpf"
 )
 
 func main() {
-	var instructions []byte
-	r1, r2, err := unix.Syscall(unix.SYS_BPF, unix.BPF_PROG_LOAD, uintptr(unsafe.Pointer(&instructions)), 0)
-	fmt.Printf("r1 = %v, r2 = %v, lastErr = %v\n", r1, r2, err)
-	fmt.Printf("Error: %s", err.Error())
+	p := ebpf.NewArrayProg()
+	p.Push(ebpf.Mov(ebpf.R0(), ebpf.Im(1)))
+	p.Push(ebpf.Exit())
+	if err := p.Write(os.Stdout); err != nil {
+		fmt.Printf("Write failed")
+		os.Exit(1)
+	}
 	os.Exit(0)
 }

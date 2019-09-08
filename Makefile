@@ -19,7 +19,7 @@ GO_FLAGS     := -ldflags "-extldflags \"-static\" $(GO_LDFLAGS)" -tags netgo
 APP_SKYME := cmd/skyme/skyme
 skyme: $(APP_SKYME)
 
-$(APP_SKYME): cmd/skyme/main.go
+$(APP_SKYME): cmd/skyme/main.go pkg/**/*.go
 	CGO_ENABLED=0 go build $(GO_FLAGS) -o $@ ./$(@D)
 
 # ---------------------------------------------------------
