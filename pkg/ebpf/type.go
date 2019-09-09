@@ -30,28 +30,24 @@ func (i Inst) Write(writer io.Writer) error {
 }
 
 // Prog contains set of instructions
-type Prog interface {
-	ProgType() int
-	Insts() []Inst
+type Prog struct {
+	ProgType int
+	Insts    []Inst
 }
 
-// ArrayProg builds array of instructions
-type ArrayProg struct {
-	progType int
-	insts    []Inst
-}
-
-func NewArrayProg(progType int) *ArrayProg {
+// NewProg creates a new instance of BPF program
+func NewProg(progType int) *Prog {
 	is := make([]Inst, 0)
-	return &ArrayProg{progType, is}
+	return &Prog{progType, is}
 }
 
-func (p *ArrayProg) Push(i Inst) {
-	p.insts = append(p.insts, i)
+// Push appends instruction to tail of array of instruction
+func (p *Prog) Push(i Inst) {
+	p.Insts = append(p.Insts, i)
 }
 
-func (p *ArrayProg) Write(w io.Writer) error {
-	for _, i := range p.insts {
+func (p *Prog) Write(w io.Writer) error {
+	for _, i := range p.Insts {
 		if err := i.Write(w); err != nil {
 			return err
 		}

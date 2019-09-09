@@ -16,43 +16,46 @@ func (r Reg) source() byte {
 	return unix.BPF_X
 }
 
-// R0 is Register 0
-func R0() Reg { return Reg{0} }
+// R0 is Register 0, rax in x86_64
+var R0 = Reg{0}
 
-// R1 is Register 1
-func R1() Reg { return Reg{1} }
+// R1 is Register 1, rdi in x86_64
+var R1 = Reg{1}
 
-// R2 is Register 2
-func R2() Reg { return Reg{2} }
+// R2 is Register 2, rsi in x86_64
+var R2 = Reg{2}
 
-// R3 is Register 3
-func R3() Reg { return Reg{3} }
+// R3 is Register 3, rdx in x86_64
+var R3 = Reg{3}
 
-// R4 is Register 4
-func R4() Reg { return Reg{4} }
+// R4 is Register 4, rcx in x86_64
+var R4 = Reg{4}
 
-// R5 is Register 5
-func R5() Reg { return Reg{5} }
+// R5 is Register 5, r8  in x86_64
+var R5 = Reg{5}
 
-// R6 is Register 6
-func R6() Reg { return Reg{6} }
+// R6 is Register 6, rdx in x86_64
+var R6 = Reg{6}
 
-// R7 is Register 7
-func R7() Reg { return Reg{7} }
+// R7 is Register 7, r13 in x86_64
+var R7 = Reg{7}
 
-// R8 is Register 8
-func R8() Reg { return Reg{8} }
+// R8 is Register 8, r14 in x86_64
+var R8 = Reg{8}
 
-// R9 is Register 9
-func R9() Reg { return Reg{9} }
+// R9 is Register 9, r15 in x86_64
+var R9 = Reg{9}
+
+// R10 is Register 10, rbp in x86_64
+var R10 = Reg{10}
 
 // Imm means immediate value
 type Imm struct {
 	val uint32
 }
 
-// Im as immediate value
-func Im(v uint32) Imm { return Imm{v} }
+// I as immediate value
+func I(v uint32) Imm { return Imm{v} }
 
 func (i Imm) source() byte {
 	return unix.BPF_K
@@ -65,7 +68,7 @@ func alujmp(class byte, op byte, dest Reg, offset uint16, value Value) Inst {
 		src = value.(Reg)
 		imm = Imm{0}
 	} else { // assuming source type : immediate unix.BPF_X
-		src = R0()
+		src = R0
 		imm = value.(Imm)
 	}
 	regbit := (dest.nr << 4) | src.nr
@@ -78,7 +81,7 @@ func alu(op byte, dest Reg, value Value) Inst {
 }
 
 func jmp(op byte, offset uint16, value Value) Inst {
-	return alujmp(unix.BPF_JMP, op, R0(), offset, value)
+	return alujmp(unix.BPF_JMP, op, R0, offset, value)
 }
 
 // Add is instruction for BPF_ADD
@@ -93,5 +96,5 @@ func Mov(dest Reg, value Value) Inst {
 
 // Exit is instruction for BPF_EXIT
 func Exit() Inst {
-	return jmp(unix.BPF_EXIT, 0, R0())
+	return jmp(unix.BPF_EXIT, 0, R0)
 }

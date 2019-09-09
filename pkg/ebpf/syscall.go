@@ -7,7 +7,8 @@ import (
 	"golang.org/x/sys/unix"
 )
 
-type ProgId = uintptr
+// ProgID means file descriptor given by kernel
+type ProgID = uintptr
 
 // ProgLoadAttr is control parameters when you load eBPF program
 type ProgLoadAttr struct { /* Used by BPF_PROG_LOAD */
@@ -22,13 +23,13 @@ type ProgLoadAttr struct { /* Used by BPF_PROG_LOAD */
 }
 
 // Load accepts BPF program
-func Load(prog Prog) (ProgId, error) {
+func Load(prog *Prog) (ProgID, error) {
 	logBuf := make([]byte, 1024)
 	//	var progidptr uintptr
 	attr := ProgLoadAttr{
 		unix.BPF_PROG_TYPE_SOCKET_FILTER,
-		uint32(len(prog.Insts())),
-		prog.Insts(),
+		uint32(len(prog.Insts)),
+		prog.Insts,
 		[]byte("GPL"),
 		1,
 		1024,
